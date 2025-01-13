@@ -22,18 +22,20 @@ aktywnosc_ekonomiczna <- aktywnosc_ekonomiczna %>% select(1:8)
 
 #wydatki budżetów województw na ochronę zdrowia
 wydatki_ochrona_zdrowia <-  read_csv2("data/FINA_1586_CREL_20250113234937.csv")
-
+wydatki_ochrona_zdrowia <- wydatki_ochrona_zdrowia %>% select(1:6)
 
 #wydatki budżetów województw na edukację
 wydatki_edukacja_wychowanie <- read.csv2("data/FINA_1582_CREL_20250113234730.csv")
-
+wydatki_edukacja_wychowanie <- wydatki_edukacja_wychowanie %>% select(1:6)
 
 #wydatki budżetów województw na transport i łączność
 wydatki_transport_lacznosc <- read_csv2("data/FINA_1579_CREL_20250113235613.csv")
+wydatki_transport_lacznosc <- wydatki_transport_lacznosc %>% select(1:6)
 
 #wydatki budżetów województw na administrację publiczną
 wydatki_administracja <- read_csv2("data/FINA_1590_CREL_20250113235801.csv")
-
+wydatki_administracja <- wydatki_administracja %>% select(1:6)
 
 #wydatki budżetów województw na gospodarkę mieszkaniową
 wydatki_gosp_mieszkaniowa <- read_csv2("data/FINA_1581_CREL_20250113235923.csv")
+wydatki_gosp_mieszkaniowa <- wydatki_gosp_mieszkaniowa %>% select(1:6)
