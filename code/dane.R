@@ -48,3 +48,7 @@ migracje <- migracje %>% select(1:6)
 #przeciętna liczba osoób w gospodarstwie domowym
 gosp_dom <- read_csv2("data/LUDN_1868_CREL_20250125192139.csv")
 gosp_dom <- gosp_dom %>% select(1:6)
+
+#urodzenia żywe
+urodzenia_żywe <- read_csv2("data/LUDN_1868_CREL_20250125192139.csv")
+urodzenia_żywe <- urodzenia_żywe %>% select(1:6)
