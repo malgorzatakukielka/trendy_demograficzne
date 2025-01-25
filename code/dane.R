@@ -44,3 +44,7 @@ wydatki_gosp_mieszkaniowa <- wydatki_gosp_mieszkaniowa %>% select(1:6)
 #migracje_wskazniki
 migracje <- read_csv2("data/LUDN_4382_CREL_20250125191617.csv")
 migracje <- migracje %>% select(1:6)
+
+#przeciętna liczba osoób w gospodarstwie domowym
+gosp_dom <- read_csv2("data/LUDN_1868_CREL_20250125192139.csv")
+gosp_dom <- gosp_dom %>% select(1:6)
