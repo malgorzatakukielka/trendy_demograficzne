@@ -54,5 +54,13 @@ miasto <- miasto_wies %>%
 
 urbanizacja <- left_join(miasto, ludnosc_calkowita, by = c("Rok", "Nazwa")) %>%
   mutate(wskaznik_urbanizacji = (ludnosc_miasto / ludnosc_calkowita) * 100) 
+
+# wskaźnik liczby urodzeń żywych w stosunku do całkowitej populacji (w skali województw)
+wskaznik_urodzen <- urodzenia_żywe %>% 
+  left_join(ludnosc_calkowita, by = c("Rok", "Nazwa")) %>% 
+  group_by(Rok, Nazwa) %>% 
+  mutate(
+    wskaznik = Wartosc/ludnosc_calkowita
+  )
   
   
