@@ -7,6 +7,5 @@ Aplikacja Shiny umożliwiająca interaktywną analizę danych demograficznych z 
 
 ## Technologie
 - Język: R
-<<<<<<< HEAD
 - Pakiety: shiny, shinydashboard, bdl, ggplot2, tidyverse, sf, leaflet
 
