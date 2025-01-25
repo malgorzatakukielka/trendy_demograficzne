@@ -1,4 +1,5 @@
 library(tidyverse)
+library(readr)
 
 #ludność wg wieku i płci
 ludnosc <- read_csv2("~/trendy_demograficzne/data/LUDN_2137_CREL_20250113221303.csv")
