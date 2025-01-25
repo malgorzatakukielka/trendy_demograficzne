@@ -40,3 +40,7 @@ wydatki_administracja <- wydatki_administracja %>% select(1:6)
 #wydatki budżetów województw na gospodarkę mieszkaniową
 wydatki_gosp_mieszkaniowa <- read_csv2("data/FINA_1581_CREL_20250113235923.csv")
 wydatki_gosp_mieszkaniowa <- wydatki_gosp_mieszkaniowa %>% select(1:6)
+
+#migracje_wskazniki
+migracje <- read_csv2("data/LUDN_4382_CREL_20250125191617.csv")
+migracje <- migracje %>% select(1:6)
