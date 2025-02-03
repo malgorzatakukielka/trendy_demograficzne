@@ -52,3 +52,10 @@ gosp_dom <- gosp_dom %>% select(1:6)
 #urodzenia żywe
 urodzenia_żywe <- read_csv2("data/LUDN_3923_CREL_20250125194018.csv")
 urodzenia_żywe <- urodzenia_żywe %>% select(-c(3, 4, 5, 8, 9 , 10))
+
+#ludność warszawy
+warszawa <- read_csv2("data/LUDN_2137_CREL_20250203183614.csv")
+
+#saldo migracji
+saldo_migracji <- read_csv2("data/LUDN_3000_CREL_20250203204210.csv")
+saldo_migracji <- saldo_migracji %>% select(1:7)

@@ -22,15 +22,15 @@ zmiany_ludnosc <- ludnosc %>%
 #(stosunek liczby osób starszych niż 65 lat do liczby osób w wieku produkcyjnym (15-64 lata))
 wiek_produkcja <- ludnosc %>%
   filter(Wiek %in% c("15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64")) %>%
-  group_by(Rok) %>%
+  group_by(Rok, Nazwa) %>%
   summarise(wiek_produkcja = sum(Wartosc))
 
 wiek_starsi <- ludnosc %>%
   filter(Wiek %in% c("65-69", "70 i więcej")) %>%
-  group_by(Rok) %>%
+  group_by(Rok, Nazwa) %>%
   summarise(wiek_starsi = sum(Wartosc))
 
-wskaźnik_zależności <- left_join(wiek_produkcja, wiek_starsi, by = "Rok") %>%
+wskaźnik_zależności <- left_join(wiek_produkcja, wiek_starsi, by = c("Rok", "Nazwa")) %>%
   mutate(wskaźnik_zależności = wiek_starsi / wiek_produkcja * 100)
 
 #populacja w miastach/ na wsi - zmiana w %
