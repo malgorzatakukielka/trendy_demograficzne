@@ -10,24 +10,25 @@ function(input, output, session) {
                                     year = 2006)
   
   output$mapa <- renderLeaflet({
+    
+    
     leaflet(polska, 
-            options = leafletOptions( 
+            options = leafletOptions(
               zoomControl = FALSE,
               dragging = FALSE,
-              minZoom = 6,
-              maxZoom = 6
+              minZoom = 5,
+              maxZoom = 5
             )) %>%  
       addPolygons(layerId = ~NAME_LATN,
                   label = ~NAME_LATN,
-                  col = "#9ca0a3",
+                  color = "#9ca0a3",
                   fillColor = "#408cbc",
                   weight = 2,
-                  fillOpacity = .1,
+                  fillOpacity = 0.1,
                   highlight = highlightOptions(
                     fillOpacity = 1,
                     bringToFront = TRUE
                   ))
   })
-
-
+  
 }
