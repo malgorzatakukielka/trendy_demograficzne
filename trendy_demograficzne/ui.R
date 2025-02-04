@@ -13,23 +13,32 @@ dashboardPage(
                   titleWidth = 310),
   dashboardSidebar(width = 310,
                    sidebarMenu(
+                     id = "tabs", # zmienna techniczna, przekazuje wartość do conditionalpanel
+                     
                      h4("Menu"),
                      menuItem("Strona Główna", tabName = "home", icon = icon("house")),
                      menuItem("Strona 2", tabName = "tab2"), #stylizowanie do zrobienia
+                     
+                   conditionalPanel(
+                     condition = "input.tabs !== 'home'",  # Widoczność na stronach poza home
                      h4("Wybór:"),
-                     h5("Wybór województw do analizy:")
-                   ),
-                   # Dodanie mapy do sidebaru
-                   box(leafletOutput("mapa", height = "215px"), width = 12),
-                   tags$div(
-                     h5("Wybór lat:", class = "custom-h5"),  # Zastosowanie klasy CSS
-                     sliderInput("lata", 
-                                 label = NULL, 
-                                 min = 2000, 
-                                 max = 2023, 
-                                 step = 1, 
-                                 value = c(2000, 2023), 
-                                 sep = "")
+                     h5("Wybór województw do analizy:"),
+                     tags$div(class = "box", 
+                              tags$div(class = "box-body", 
+                                       leafletOutput("mapa", height = "215px")
+                              )),
+                     tags$div(class = "slider-container",
+                       h5("Wybór lat:", class = "custom-h5"),  # Zastosowanie klasy CSS
+                       sliderInput("lata", 
+                                   label = NULL, 
+                                   min = 2000, 
+                                   max = 2023, 
+                                   step = 1, 
+                                   value = c(2000, 2023), 
+                                   sep = "")
+                     )
+                     )
+
                    )
                    
   ),

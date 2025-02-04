@@ -1,0 +1,41 @@
+h4 {
+  display: block;
+  font-size: 1em;
+  margin-top: 1.33em;
+  margin-bottom: 1em;
+  margin-left: 10px;
+  margin-right: 0;
+  font-weight: bold;
+}
+
+.leaflet-container {
+background-color: white !important;
+}
+
+h5 {
+  display: block;
+  font-size: 1em;
+  margin-top: 1.33em;
+  margin-bottom: 1em;
+  margin-left: 15px;
+  margin-right: 0;
+  font-weight: bold;
+}
+
+/* custom padding dla h5 nad sliderinput */
+.custom-h5 {
+  margin-bottom: 3px; !important; /* Mniejszy margin-bottom */
+}
+
+.box-body {
+  padding: 5px;
+  margin: auto;
+}
+
+.box {
+  padding: 5px;
+  width: 95%;  
+  margin: auto;
+}
+
+
