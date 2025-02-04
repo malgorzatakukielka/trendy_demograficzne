@@ -6,90 +6,24 @@ library(ggrepel)
 library(eurostat)
 library(sf)
 library(scales)
+library(corrplot)
 
 
 #wskażnik obciążenia demograficznego
-wskaźnik_zależności_avg <- wskaźnik_zależności %>%
-  group_by(Rok) %>%
-  summarise(weighted_avg = mean(wskaźnik_zależności, na.rm = TRUE))
-
-ggplotly(ggplot() +
-  geom_line(data = wskaźnik_zależności, aes(x = Rok, y = wskaźnik_zależności, color = Nazwa), size = 1) +
-  geom_line(data = wskaźnik_zależności_avg, aes(x = Rok, y = weighted_avg), color = "black", size = 2) +
-  theme_bw() +
-  ggtitle("Stosunek liczby osób starszych niż 65 lat do liczby osób w wieku produkcyjnym (15-64 lata)") +
-  ylab("Wskaźnik zależności") +
-  theme(legend.position = "top")
-)
-
-#customowa funkcja do generowania wykresów ze średnią ważoną
-plot_with_weighted_avg <- function(data, y_var) {
-  avg_data <- data %>%
-    group_by(Rok) %>%
-    summarise(weighted_avg = mean(!!sym(y_var), na.rm = TRUE)) #dodanie średniej ważonej ogólnopolskiej
-
-  trend_data <- data %>%
-    group_by(Nazwa) %>%
-    do(tidy(lm(!!sym(y_var) ~ Rok, data = .))) %>%
-    filter(term == "Rok" & estimate > 0) %>%
-    mutate(label = paste(Nazwa, "(rosnący)")) #dodanie adnotacji o dodatniej wartości współczynnika kirunkowego linii regresji
-  
-  label_positions <- data %>%
-    filter(Nazwa %in% trend_data$Nazwa) %>%
-    group_by(Nazwa) %>%
-    slice_tail(n = 1) %>%
-    mutate(label = paste(Nazwa, "(rosnący)")) 
-  
-  year_breaks <- sort(unique(data$Rok))
-  
-  #wykres
-  ggplot(data, aes(x = Rok, y = !!sym(y_var), color = Nazwa)) +
-    geom_line() +
-    geom_line(data = avg_data, aes(x = Rok, y = weighted_avg), color = "black", size = 2) +
-    theme_bw() +
-    ylab(y_var) +
-    scale_x_continuous(breaks = year_breaks) +
-    theme(legend.position = "top") +
-    geom_text_repel(data = label_positions, 
-                    aes(x = Rok, y = !!sym(y_var), label = label, color = Nazwa), 
-                    hjust = 1, vjust = -0.7, size = 3.5, fontface = "bold", 
-                    direction = 'both', max.overlaps = Inf) 
-}
+plot_with_weighted_avg_labels(wskaźnik_zależności, "wskaźnik_zależności")
 
 #wykres wskaźnika urbanizacji
 plot_with_weighted_avg(urbanizacja, 'wskaznik_urbanizacji') + 
   ggtitle("Wskaźnik urbanizacji")
+
+plot_with_weighted_avg_labels(urbanizacja, 'wskaznik_urbanizacji')
 
 warszawa %>% 
   ggplot(aes(x = Rok, y = Wartosc)) + geom_line() + theme_bw() + 
   ggtitle("Ludność powiatu miasta stołecznego Warszawa")
 
 
-plot_with_weighted_avg(wskaznik_urodzen, 'wskaznik')
-
-#customowa funkcja bez średniej ważonej
-plot_wo_weighted_avg <- function(data, y_var) {
-  
-  year_breaks <- sort(unique(data$Rok))
-  
-  label_positions <- data %>%
-    group_by(Nazwa) %>%
-    slice_tail(n = 1) %>%
-    mutate(label = Nazwa)
-  
-  #wykres
-  ggplot(data, aes(x = Rok, y = !!sym(y_var), color = Nazwa)) +
-    geom_line() +
-    theme_bw() +
-    ylab(y_var) +
-    scale_x_continuous(breaks = year_breaks) + 
-    theme(legend.position = "top") +
-    geom_text_repel(data = label_positions, 
-                    aes(x = Rok, y = !!sym(y_var), label = label, color = Nazwa),
-                    size = 3.5, fontface = "bold", direction = "both", 
-                    box.padding = 0.5, point.padding = 0.2, force = 2, 
-                    max.overlaps = Inf)
-}
+plot_with_weighted_avg_labels(wskaznik_urodzen, 'wskaznik')
 
 #wykres migracji wewnętrznych
 saldo_migracji %>% 
@@ -199,4 +133,66 @@ ggplot(data = map_data_merged) +
                                label.hjust = 0.5, 
                                label.vjust = 0.5))
 
+#gsopodarstwa domowe
+ggplotly(plot_with_weighted_avg_labels(gosp_dom, "Wartosc"))
 
+#gospodarstwa domowe - mapa
+# Obliczenie średniej dla województw w latach 2014-2023
+wojewodztwa_avg <- gosp_dom %>%
+  filter(Rok >= 2014 & Rok <= 2023) %>%
+  group_by(Nazwa) %>%
+  summarise(avg_value = mean(Wartosc, na.rm = TRUE))
+
+# Obliczenie ogólnopolskiej średniej
+weighted_avg <- mean(wojewodztwa_avg$avg_value, na.rm = TRUE)
+
+# Dodanie informacji, czy województwo jest powyżej/poniżej średniej
+wojewodztwa_avg <- wojewodztwa_avg %>%
+  mutate(category = ifelse(avg_value >= weighted_avg, "Powyżej średniej", "Poniżej średniej"))
+
+# Pobranie mapy Polski na poziomie województw (NUTS 2)
+polska <- get_eurostat_geospatial(resolution = 10, nuts_level = 2, country = "PL", year = 2006)
+
+# Dopasowanie nazw województw
+map_data_merged <- polska %>%
+  mutate(NUTS_NAME = str_to_upper(NUTS_NAME)) %>%
+  left_join(wojewodztwa_avg, by = c("NUTS_NAME" = "Nazwa"))
+
+# Wyznaczenie centroidów dla etykiet
+polska_with_coords <- map_data_merged %>%
+  st_transform(crs = 4326) %>%
+  st_centroid() %>%
+  cbind(st_coordinates(.))
+
+# Tworzenie mapy
+ggplot(data = map_data_merged) +
+  geom_sf(aes(fill = category), color = "black") +
+  scale_fill_manual(values = c("Powyżej średniej" = "lightgreen", "Poniżej średniej" = "lightcoral")) +
+  theme_minimal() +
+  ggtitle("Średnia wartość dla gospodarstw domowych (2014-2023)") +
+  theme(legend.position = "top", axis.title = element_blank()) +
+  geom_label_repel(data = polska_with_coords, 
+                   aes(x = X, y = Y, label = NUTS_NAME), 
+                   size = 3, fontface = "bold")
+
+#corrplot gospodarstwa domowe - urbanizacja
+# Agregacja danych: średnie wartości dla województw (lata 2014-2023)
+gosp_dom_avg <- gosp_dom %>%
+  filter(Rok >= 2014 & Rok <= 2023) %>%
+  group_by(Nazwa) %>%
+  summarise(avg_gosp_dom = mean(Wartosc, na.rm = TRUE))
+
+urbanizacja_avg <- urbanizacja %>%
+  filter(Rok >= 2014 & Rok <= 2023) %>%
+  group_by(Nazwa) %>%
+  summarise(avg_urbanizacja = mean(wskaznik_urbanizacji, na.rm = TRUE))
+
+# Połączenie zbiorów danych
+data_merged <- gosp_dom_avg %>%
+  inner_join(urbanizacja_avg, by = "Nazwa")
+
+# Obliczenie macierzy korelacji
+cor_matrix <- cor(data_merged %>% select(-Nazwa), use = "complete.obs")
+
+# Wizualizacja macierzy korelacji
+corrplot(cor_matrix, method = "color", addCoef.col = "black", tl.col = "black", tl.srt = 45)
