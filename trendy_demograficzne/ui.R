@@ -17,8 +17,7 @@ dashboardPage(
                      
                      h4("Menu"),
                      menuItem("Strona Główna", tabName = "home", icon = icon("house")),
-                     menuItem("Strona 2", tabName = "tab2"), #stylizowanie do zrobienia
-                     
+                     menuItem("Analiza Demografii", tabName = "tab2", icon = icon("person")),
                    conditionalPanel(
                      condition = "input.tabs !== 'home'",  # Widoczność na stronach poza home
                      h4("Wybór:"),
@@ -36,9 +35,7 @@ dashboardPage(
                                    step = 1, 
                                    value = c(2000, 2023), 
                                    sep = "")
-                     )
-                     )
-
+                     ))
                    )
                    
   ),
