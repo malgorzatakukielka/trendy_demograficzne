@@ -24,7 +24,7 @@ dashboardPage(
                      h5("Wybór województw do analizy:"),
                      tags$div(class = "box", 
                               tags$div(class = "box-body", 
-                                       leafletOutput("mapa", height = "215px")
+                                       leafletOutput("mapafiltr", height = "215px")
                               )),
                      tags$div(class = "slider-container",
                        h5("Wybór lat:", class = "custom-h5"),  # Zastosowanie klasy CSS
