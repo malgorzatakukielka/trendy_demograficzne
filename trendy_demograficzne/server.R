@@ -1,7 +1,7 @@
 library(shiny)
 
 function(input, output, session) {
-
+  
   # Renderowanie mapy
   polska <- get_eurostat_geospatial(resolution = 10, 
                                     nuts_level = 2, 
@@ -9,10 +9,6 @@ function(input, output, session) {
                                     year = 2006)
   
   output$mapafiltr <- renderLeaflet({
-<<<<<<< HEAD
-=======
-    
->>>>>>> 59bfc83ee55c70af0e2f7cbe4b5eae048d217a8c
     
     leaflet(polska, 
             options = leafletOptions(
@@ -39,42 +35,24 @@ function(input, output, session) {
   
   observeEvent(input$mapafiltr_shape_click, { 
     click <- input$mapafiltr_shape_click
-<<<<<<< HEAD
     print(click) #debug
     print(wojewodztwa$wybrane) #debug
     
-  # kliknięcie poowduje dodanie województwa do reactiveValues
-=======
-    print(click)
-    print(wojewodztwa$wybrane)
-  
->>>>>>> 59bfc83ee55c70af0e2f7cbe4b5eae048d217a8c
-  if (click$id %in% wojewodztwa$wybrane) {
-    wojewodztwa$wybrane <- 
-      wojewodztwa$wybrane[wojewodztwa$wybrane != click$id]
-    
-  } else if(click$id == "selected"){ 
-<<<<<<< HEAD
-    # ponowne kliknięcie poowduje uzunięcie województwa z reactiveValues
-    wojewodztwa$wybrane <- 
-      wojewodztwa$wybrane[wojewodztwa$wybrane !=
-                             tail(wojewodztwa$wybrane, n = 1)]
-  }else {
-    wojewodztwa$wybrane <- c(wojewodztwa$wybrane, click$id)
-    
-  }
-  # graficzne oznaczenie wybranych do reactiveValues województw 
-=======
-    # when a county is clicked again it is removed
-    wojewodztwa$wybrane <- 
-      wojewodztwa$wybrane[wojewodztwa$wybrane !=
-                             tail(wojewodztwa$wybrane, n = 1)]
-  }else { # If not selected, add it
-    wojewodztwa$wybrane <- c(wojewodztwa$wybrane, click$id)
-    
-  }
-  
->>>>>>> 59bfc83ee55c70af0e2f7cbe4b5eae048d217a8c
+    # kliknięcie poowduje dodanie województwa do reactiveValues
+    if (click$id %in% wojewodztwa$wybrane) {
+      wojewodztwa$wybrane <- 
+        wojewodztwa$wybrane[wojewodztwa$wybrane != click$id]
+      
+    } else if(click$id == "selected"){ 
+      # ponowne kliknięcie poowduje uzunięcie województwa z reactiveValues
+      wojewodztwa$wybrane <- 
+        wojewodztwa$wybrane[wojewodztwa$wybrane !=
+                              tail(wojewodztwa$wybrane, n = 1)]
+    }else {
+      wojewodztwa$wybrane <- c(wojewodztwa$wybrane, click$id)
+      
+    }
+    # graficzne oznaczenie wybranych do reactiveValues województw 
     leafletProxy("mapafiltr", session) %>% 
       addPolygons(data = polska,
                   layerId = ~NAME_LATN,
