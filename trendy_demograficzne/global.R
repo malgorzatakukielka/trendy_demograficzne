@@ -120,3 +120,49 @@ wydatki_gosp_mieszkaniowa <- get_data_by_variable(8462, unitLevel = lvl) %>%
          Rok = year,
          Wartosc = val,
          'Jednostka Miary' = measureName)
+
+# SALDO MIGRACJI ####
+
+## Pobranie danych ####
+dane <- get_data_by_variable(varId = get_variables("P3000") %>% 
+                               filter(n1 =="rok", grepl("saldo", n2)) %>% 
+                               pull(id), unitLevel = lvl)
+
+## Pobranie mapowania id na n1 i n2 ####
+id_mapping <- get_variables("P3000") %>%
+  filter(n1 =="rok", grepl("saldo", n2)) %>%
+  select(id, Okresy = n1, Migracje = n2, `Jednostka miary` = measureUnitName)
+
+## Zmiana nazwy kolumny id, aby uniknąć konfliktów ####
+dane <- dane %>%
+  rename(Kod = id)
+
+## Przekształcenie na długi format ####
+saldo_migracji <- dane %>%
+  pivot_longer(cols = starts_with("val_"), 
+               names_to = "id_temp", 
+               names_prefix = "val_", 
+               values_to = "Wartosc") %>%
+  mutate(id_temp = as.integer(id_temp)) %>%  # Konwersja id_temp na integer
+  left_join(id_mapping, by = c("id_temp" = "id")) %>%
+  rename(Nazwa = name, Rok = year) %>%
+  select(Kod, Nazwa, Okresy, Migracje, Rok, Wartosc, `Jednostka miary`)
+
+rm(dane, id_mapping) #usunięcie tabel technicznych
+
+# PRZECIĘTNA LICZBA OSÓB W GOSPODARSTWIE DOMOWYM ####
+gosp_dom <- get_data_by_variable(7727, unitLevel = lvl) %>% 
+  select(Kod = id,
+         Nazwa = name,
+         Rok = year,
+         Wartosc = val,
+         'Jednostka Miary' = measureName)
+get_variables("P3923")
+
+# LICZBA URODZEŃ ŻYWYCH ####
+urodzenia_żywe <- get_data_by_variable(1610654, unitLevel = lvl) %>% 
+  select(Kod = id,
+         Nazwa = name,
+         Rok = year,
+         Wartosc = val,
+         'Jednostka Miary' = measureName)
