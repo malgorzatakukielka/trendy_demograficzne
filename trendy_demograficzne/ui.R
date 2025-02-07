@@ -8,7 +8,9 @@ library(eurostat)
 library(leaflet)
 library(shinyWidgets)
 
+
 dashboardPage(
+
   dashboardHeader(title = "Trendy Demograficzne",
                   titleWidth = 310),
   dashboardSidebar(width = 310,
@@ -17,7 +19,10 @@ dashboardPage(
                      
                      h4("Menu"),
                      menuItem("Strona Główna", tabName = "home", icon = icon("house")),
-                     menuItem("Analiza Demografii", tabName = "tab2", icon = icon("person")),
+                     menuItem("Analiza Demografii", tabName = "tab2", icon = icon("person"),
+                              menuSubItem("Wskaźnik obciążenia demograficznego", 
+                                          tabName = "tab2_1", icon = icon("chevron-right"))
+                     ),
                    conditionalPanel(
                      condition = "input.tabs !== 'home'",  # Widoczność na stronach poza home
                      h4("Wybór:"),
@@ -40,7 +45,8 @@ dashboardPage(
                    
   ),
   dashboardBody(
-    tags$head(
+    tags$head( #pobranie czcionki z google fonts, ponieważ Source Sans Pro w shinydashboard nie obsługuuje części polskich znaków
+      # tags$link(rel = "stylesheet", href = "https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap"),
       tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
     ),
     tabItems(
@@ -54,7 +60,17 @@ dashboardPage(
         tabName = "tab2",
         fluidRow(
           box(title = "Treść strony 2", width = 12)
-        )
+        ),
+      ),
+      tabItem(
+        tabName = "tab2_1",
+        fluidRow(
+          box(title = "Placeholder na wykres obciążenia demograficznego", 
+              width = 12)
+        ),
+        fluidRow(
+          box(title = "Placeholder na opis wykresu", width = 12)
+        ),
       )
     )
   )
