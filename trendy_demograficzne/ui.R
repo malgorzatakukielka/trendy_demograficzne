@@ -46,7 +46,7 @@ dashboardPage(
   ),
   dashboardBody(
     tags$head( #pobranie czcionki z google fonts, ponieważ Source Sans Pro w shinydashboard nie obsługuuje części polskich znaków
-      # tags$link(rel = "stylesheet", href = "https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap"),
+      tags$link(rel = "stylesheet", href = "https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap"),
       tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
     ),
     tabItems(

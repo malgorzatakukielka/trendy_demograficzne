@@ -31,27 +31,23 @@ function(input, output, session) {
   })
   
   #logika filtrowania mapą:
-  wojewodztwa <- reactiveValues(wybrane = NULL)
+  wojewodztwa <- reactiveValues(wybrane = character(0))
   
   observeEvent(input$mapafiltr_shape_click, { 
     click <- input$mapafiltr_shape_click
-    print(click) #debug
-    print(wojewodztwa$wybrane) #debug
     
-    # kliknięcie poowduje dodanie województwa do reactiveValues
-    if (click$id %in% wojewodztwa$wybrane) {
-      wojewodztwa$wybrane <- 
-        wojewodztwa$wybrane[wojewodztwa$wybrane != click$id]
-      
-    } else if(click$id == "selected"){ 
-      # ponowne kliknięcie poowduje uzunięcie województwa z reactiveValues
-      wojewodztwa$wybrane <- 
-        wojewodztwa$wybrane[wojewodztwa$wybrane !=
-                              tail(wojewodztwa$wybrane, n = 1)]
-    }else {
-      wojewodztwa$wybrane <- c(wojewodztwa$wybrane, click$id)
-      
+    # Pobranie aktualnej listy wybranych województw
+    wybrane <- wojewodztwa$wybrane
+    
+    # Dodanie lub usunięcie województwa z listy wybranych
+    if (click$id %in% wybrane) {
+      wybrane <- wybrane[wybrane != click$id]
+    } else {
+      wybrane <- c(wybrane, click$id)
     }
+    
+    # Aktualizacja wartości w reactiveValues
+    wojewodztwa$wybrane <- wybrane
     # graficzne oznaczenie wybranych do reactiveValues województw 
     leafletProxy("mapafiltr", session) %>% 
       addPolygons(data = polska,
