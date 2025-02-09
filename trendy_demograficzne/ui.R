@@ -1,4 +1,4 @@
-
+library(readr)
 library(shiny)
 library(shinydashboard)
 library(plotly)
@@ -7,6 +7,23 @@ library(giscoR)
 library(eurostat)
 library(leaflet)
 library(shinyWidgets)
+library(ggrepel)
+
+ludnosc <- read_csv2("~/trendy_demograficzne/data/LUDN_2137_CREL_20250113221303.csv")
+ludnosc <- ludnosc %>% select(1:7)
+
+wiek_produkcja <- ludnosc %>%
+  filter(Wiek %in% c("15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64")) %>%
+  group_by(Rok, Nazwa) %>%
+  summarise(wiek_produkcja = sum(Wartosc))
+
+wiek_starsi <- ludnosc %>%
+  filter(Wiek %in% c("65-69", "70 i więcej")) %>%
+  group_by(Rok, Nazwa) %>%
+  summarise(wiek_starsi = sum(Wartosc))
+
+wskaźnik_zależności <- left_join(wiek_produkcja, wiek_starsi, by = c("Rok", "Nazwa")) %>%
+  mutate(wskaźnik_zależności = wiek_starsi / wiek_produkcja * 100)
 
 
 dashboardPage(
@@ -65,8 +82,11 @@ dashboardPage(
       tabItem(
         tabName = "tab2_1",
         fluidRow(
-          box(title = "Placeholder na wykres obciążenia demograficznego", 
-              width = 12)
+          box(title = "Wykres obciążenia demograficznego", 
+              width = 12, height = "500px",
+              plotlyOutput("plot1"),
+              textOutput("no_selection_msg")
+              )
         ),
         fluidRow(
           box(title = "Placeholder na opis wykresu", width = 12)

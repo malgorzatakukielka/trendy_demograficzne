@@ -2,6 +2,9 @@ library(shiny)
 
 function(input, output, session) {
   
+  #ładowanie funkcji z pliku functions.R
+  source("functions.R")
+  
   # Renderowanie mapy
   polska <- get_eurostat_geospatial(resolution = 10, 
                                     nuts_level = 2, 
@@ -48,6 +51,7 @@ function(input, output, session) {
     
     # Aktualizacja wartości w reactiveValues
     wojewodztwa$wybrane <- wybrane
+    print(wojewodztwa$wybrane)
     # graficzne oznaczenie wybranych do reactiveValues województw 
     leafletProxy("mapafiltr", session) %>% 
       addPolygons(data = polska,
@@ -62,4 +66,19 @@ function(input, output, session) {
                     bringToFront = TRUE
                   ))
   })
+  
+  
+  output$plot1 <- renderPlotly({
+    
+    plotly_generate(wskaźnik_zależności, "wskaźnik_zależności", wojewodztwa)
+    
+  })
+  
+  output$no_selection_msg <- renderText({
+    if (length(wojewodztwa$wybrane) == 0) {
+      return("⚠️ Dodaj województwa do analizy, aby zobaczyć szczegóły.")
+    }
+    return("")
+  })
+  
 }
