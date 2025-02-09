@@ -9,6 +9,7 @@ library(leaflet)
 library(shinyWidgets)
 library(ggrepel)
 
+#załadowanie danych - na potrzeby testów na branchy "draft - docelowo do usunięcia
 ludnosc <- read_csv2("~/trendy_demograficzne/data/LUDN_2137_CREL_20250113221303.csv")
 ludnosc <- ludnosc %>% select(1:7)
 
@@ -44,18 +45,19 @@ dashboardPage(
                      condition = "input.tabs !== 'home'",  # Widoczność na stronach poza home
                      h4("Wybór:"),
                      h5("Wybór województw do analizy:"),
-                     tags$div(class = "box", 
-                              tags$div(class = "box-body", 
+                     tags$div(class = "custom-box", 
+                              tags$div(class = "custom-box-body", 
                                        leafletOutput("mapafiltr", height = "215px")
                               )),
                      tags$div(class = "slider-container",
                        h5("Wybór lat:", class = "custom-h5"),  # Zastosowanie klasy CSS
                        sliderInput("lata", 
-                                   label = NULL, 
+                                   label = NULL,
+                                   value = 2000,
                                    min = 2000, 
                                    max = 2023, 
                                    step = 1, 
-                                   value = c(2000, 2023), 
+                                   animate = T,
                                    sep = "")
                      ))
                    )
@@ -74,19 +76,18 @@ dashboardPage(
         )
       ),
       tabItem(
-        tabName = "tab2",
-        fluidRow(
-          box(title = "Treść strony 2", width = 12)
-        ),
-      ),
-      tabItem(
         tabName = "tab2_1",
         fluidRow(
-          box(title = "Wykres obciążenia demograficznego", 
-              width = 12, height = "500px",
+          box(title = "Wykres", 
+              width = 8, 
+              height = "500px",
               plotlyOutput("plot1"),
               textOutput("no_selection_msg")
-              )
+              ),
+          box(title = "Mapa",
+              width = 4,
+              height = "500px",
+              leafletOutput("map1"))
         ),
         fluidRow(
           box(title = "Placeholder na opis wykresu", width = 12)

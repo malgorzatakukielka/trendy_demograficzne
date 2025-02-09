@@ -27,18 +27,26 @@ h5 {
   margin-bottom: 3px; !important; /* Mniejszy margin-bottom */
 }
 
-.box-body {
-  padding: 5px;
-  margin: auto;
+
+.custom-box-body {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  padding: 10px;
 }
 
-.box {
+.custom-box {
   padding: 5px;
-  width: 95%;  
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  width: 95%; 
+  border-radius: 3px;
+  background: #fff;
+  border-top: 3px solid #d2d6de;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
 }
-
-
-
 
 

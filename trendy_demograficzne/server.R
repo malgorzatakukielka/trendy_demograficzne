@@ -70,7 +70,7 @@ function(input, output, session) {
   
   output$plot1 <- renderPlotly({
     
-    plotly_generate(wskaźnik_zależności, "wskaźnik_zależności", wojewodztwa)
+    plotly_generate(wskaźnik_zależności, "wskaźnik_zależności", wojewodztwa,  "Wskaźnik obciążenia demograficznego")
     
   })
   
@@ -81,4 +81,8 @@ function(input, output, session) {
     return("")
   })
   
+  output$map1 <- renderLeaflet({
+    selected_year <- input$lata
+    generate_map(wskaźnik_zależności, "wskaźnik_zależności", selected_year)
+  })
 }
