@@ -52,9 +52,16 @@ function(input, output, session) {
     # Aktualizacja wartości w reactiveValues
     wojewodztwa$wybrane <- wybrane
     print(wojewodztwa$wybrane)
+  })
+    # Obsługa resetu województw
+    observeEvent(input$reset, {
+      wojewodztwa$wybrane <- character(0)  # Wyczyszczenie wyboru
+    })
+    
     # graficzne oznaczenie wybranych do reactiveValues województw 
-    leafletProxy("mapafiltr", session) %>% 
-      addPolygons(data = polska,
+    observe({
+      leafletProxy("mapafiltr", session) %>% 
+        addPolygons(data = polska,
                   layerId = ~NAME_LATN,
                   label = ~NAME_LATN,
                   color = "#9ca0a3",
@@ -66,6 +73,19 @@ function(input, output, session) {
                     bringToFront = TRUE
                   ))
   })
+  # Resetowanie mapy i suwaka
+  observeEvent(input$reset, {
+    wojewodztwa$wybrane <- character(0)
+    updateSliderInput(session, "lata", 
+                      label = NULL,
+                      value = 2000,
+                      min = 2000, 
+                      max = 2023, 
+                      step = 1)
+    
+    print(wojewodztwa$wybrane) #debug
+  })
+  
   
   
   output$plot1 <- renderPlotly({
@@ -85,4 +105,6 @@ function(input, output, session) {
     selected_year <- input$lata
     generate_map(wskaźnik_zależności, "wskaźnik_zależności", selected_year)
   })
+  
+  
 }

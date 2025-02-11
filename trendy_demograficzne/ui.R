@@ -57,9 +57,10 @@ dashboardPage(
                                    min = 2000, 
                                    max = 2023, 
                                    step = 1, 
-                                   animate = T,
-                                   sep = "")
-                     ))
+                                   sep = "")),
+                     tags$div(class = "reset-button", 
+                              actionButton("reset", label = "Wyczyść"))
+                     )
                    )
                    
   ),
